@@ -1,7 +1,7 @@
 const Users = require('../users/users-model.js');
   
 
-const validateAccount = (req, res, next) => {
+const validateBody = (req, res, next) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -23,6 +23,21 @@ const checkUsernameExists = async (req, res, next) => {
     } catch (err) {
       next(err);
     }
-  }
+}
+
+const checkUsernameDoesNotExist = async (req, res, next) => {
+    const { username } = req.body;
+    try {
+      const existingUser = await Users.findBy({ username });
+      if (existingUser.length === 0) {
+        next({ status: 401, message: 'invalid credentials' });
+      } else {
+        req.existingUser = existingUser[0];
+        next();
+      }  
+    } catch (err) {
+      next(err);
+    }
+}
   
-module.exports = { validateAccount, checkUsernameExists };
+module.exports = { validateBody, checkUsernameExists, checkUsernameDoesNotExist };
