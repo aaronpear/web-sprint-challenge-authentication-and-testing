@@ -34,37 +34,49 @@ describe('POST /api/auth/register', () => {
 })
 
 describe('POST /api/auth/login', () => {
-  test('returns a status 401 on invalid password', async () => {
-    // creating new user
+  // creating proper user for each test
+  beforeEach(async () => {
     await request(server)
       .post('/api/auth/register')
       .send({ username: 'brandy', password: 'brandy123' });
-
+  })
+  test('returns a status 401 on invalid password', async () => {
     const res = await request(server)
       .post('/api/auth/login')
       .send({ username: 'brandy', password: 'jasmine123' });
     expect(res.status).toBe(401);
   })
   test('returns a status 401 on invalid username', async () => {
-    // creating new user
-    await request(server)
-      .post('/api/auth/register')
-      .send({ username: 'brandy', password: 'brandy123' });
-  
     const res = await request(server)
       .post('/api/auth/login')
       .send({ username: 'jack', password: 'brandy123' });
     expect(res.status).toBe(401);
   })
   test('returns proper message on successful login', async () => {
-    // creating new user
-    await request(server)
-      .post('/api/auth/register')
-      .send({ username: 'brandy', password: 'brandy123' });
-
     const res = await request(server)
       .post('/api/auth/login')
       .send({ username: 'brandy', password: 'brandy123' });
     expect(res.body.message).toBe('welcome, brandy');
+  })
+})
+
+describe('GET /api/jokes', () => {
+  test('returns a status 401 if token is not sent', async () => {
+    const res = await request(server)
+      .get('/api/jokes');
+    expect(res.status).toBe(401);
+  })
+  test('returns jokes when valid token is sent', async () => {
+    await request(server)
+      .post('/api/auth/register')
+      .send({ username: 'brandy', password: 'brandy123' });
+    const loginRes = await request(server)
+      .post('/api/auth/login')
+      .send({ username: 'brandy', password: 'brandy123' });
+    const res = await request(server)
+      .get('/api/jokes')
+      // not sure how to structure this request
+      .send({ headers: { authorization: loginRes.body.token }});
+    expect(res.length).toBe(3);
   })
 })
