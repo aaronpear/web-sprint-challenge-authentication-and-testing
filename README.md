@@ -54,6 +54,17 @@ Your finished project must include all of the following requirements (further in
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics.
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+
+I believe the main difference between using sessions vs. JWTs is that for sessions, the data that signifies your identity and permissions are stored server-side and the server sends to the client a cookie that contains the id of the session being stored on the server, while the data for your permissions when using JWTs are stored client-side and signed with a secret built in by the server only after comparing password hashes.
+
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
+
+Bcryptjs 'hashes' passwords before storing them in a database, meaning that rather than storing a raw password, bcryptjs runs the password through an algorithm X amount of times in order to scramble the password and provide that layer of security. This does also mean that if someone knows the algorithm being used by a server that they could much more easily retrieve and decode hashed passwords.
+
 3. How are unit tests different from integration and end-to-end testing?
+
+Unit tests are tests that test only isolated pieces of code, and only that those specific, small pieces are working as intended. Integration tests exists to test interactions between multiple pieces of code, and end-to-end testing is comprised of essentially the entire user experience, from front-end to back-end as the name implies.
+
 4. How does _Test Driven Development_ change the way we write applications and tests?
+
+Using Test Driven Development significantly increases the overall reliability and quality of code being written. TDD is defined by the workflow in the following order: write unit test, write code to pass unit test, then refactor the code as needed. By using this workflow, not only are you consistently ensuring that each piece of code you built is working as intended, but also that these tests will continue to support your development as you continue to build your project.
